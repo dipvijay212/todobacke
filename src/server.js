@@ -4,7 +4,7 @@ const app = express();
 const db = require("./database/index");
 const path = require("path");
 
-app.use(cors({ origin: "https://pmj6tvqj-3000.inc1.devtunnels.ms" }));
+app.use(cors({ origin: "http://localhost:3000"}));
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.urlencoded({ extended: true }));
@@ -25,3 +25,4 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
+
