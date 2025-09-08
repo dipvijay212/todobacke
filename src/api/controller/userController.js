@@ -10,35 +10,40 @@ const signup = async (req, res) => {
     console.log("Incoming data:", name, email);
 
     if (!name || !email || !password || !phoneNumber) {
-      console.log("in if bloack All fields are required");
-
       return res.status(400).json({ message: "All fields are required" });
     }
-    const nameValidation = /^[a-zA-Z ]{2,30}$/;
-    if (nameValidation.test(name)) {
-      return res.status(400).json({ message: "Invalid name" });
-    }
+
+    // const nameValidation = /^[a-zA-Z ]{2,30}$/;
+    // if (!nameValidation.test(name)) {
+    //   return res.status(400).json({ message: "Invalid name" });
+    // }
+
     const phoneNumberValidation = /^[0-9]{10}$/;
     if (!phoneNumberValidation.test(phoneNumber)) {
-      return res.status(400).json({ message: "wrong phone number" });
+      return res.status(400).json({ message: "Wrong phone number" });
     }
+
     const emailValidation = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailValidation.test(email)) {
-      return res.status(422).json({ message: "invalid email" });
+      return res.status(422).json({ message: "Invalid email" });
     }
+
     if (password.length < 6) {
-      return res.status(400).json({ message: "invalid password" });
+      return res.status(400).json({ message: "Invalid password" });
     }
+
     const existingUser = await db.users.findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
+
     const hashedPassword = await bcrypt.hash(String(password), 10);
 
     let profileImage = null;
     if (req.file) {
       profileImage = req.file.filename;
     }
+
     const newUser = await db.users.create({
       name,
       email,
@@ -46,13 +51,15 @@ const signup = async (req, res) => {
       profileImage,
       phoneNumber,
     });
+
     console.log("User created:", newUser);
-    res
-      .status(201)
-      .json({ message: "User created successfully", user: newUser });
+    res.status(201).json({
+      message: "User created successfully",
+      user: newUser,
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error" });
+    console.error("Signup error:", error);
+    res.status(500).json({ message: error.message }); 
   }
 };
 const userGetProfile = async (req, res) => {
@@ -181,3 +188,4 @@ const deleteUser = async (req, res) => {
   }
 };
 module.exports = { signup, login, updateUser, deleteUser, userGetProfile };
+
