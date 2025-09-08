@@ -4,7 +4,7 @@ const app = express();
 const db = require("./database/index");
 const path = require("path");
 
-app.use(cors({ origin: ["http://localhost:3000/", "https://todofront-chi.vercel.app"] }));
+app.use(cors({ origin: "*"}));
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.urlencoded({ extended: true }));
@@ -25,6 +25,7 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
+
 
 
 
